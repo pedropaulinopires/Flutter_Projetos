@@ -23,6 +23,25 @@ class CartItemWidget extends StatelessWidget {
       onDismissed: (direction) {
         cartProvider.removeItem(cartItem);
       },
+      confirmDismiss: (direction) {
+        return showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('Tem certeza'),
+              content: const Text('Você deseja remover o produto do carrinho?'),
+              actions: [
+                TextButton(onPressed: () {
+                  Navigator.of(context).pop(false);
+                }, child: const Text('Não')),
+                TextButton(onPressed: () {
+                  Navigator.of(context).pop(true);
+                }, child: const Text('Sim'))
+              ],
+            );
+          },
+        );
+      },
       background: Container(
         decoration: const BoxDecoration(
             color: Colors.red,
@@ -49,11 +68,7 @@ class CartItemWidget extends StatelessWidget {
             leading: ClipRRect(
               borderRadius: BorderRadius.circular(50),
               child: CircleAvatar(
-                backgroundColor: Colors.white,
-                child: Image.network(
-                  product.imageUrl,
-                  fit: BoxFit.cover,
-                ),
+                backgroundImage: NetworkImage(product.imageUrl)
               ),
             ),
             title: Text(cartItem.title),

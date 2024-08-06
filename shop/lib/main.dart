@@ -3,7 +3,9 @@ import 'package:shop/models/product.dart';
 import 'package:shop/pages/cart_page.dart';
 import 'package:shop/pages/orders_page.dart';
 import 'package:shop/pages/product_detail_page.dart';
+import 'package:shop/pages/product_form_page.dart';
 import 'package:shop/pages/products_overview_page.dart';
+import 'package:shop/pages/products_page.dart';
 import 'package:shop/providers/cart_provider.dart';
 import 'package:shop/providers/order_list_provider.dart';
 import 'package:shop/providers/product_list_provider.dart';
@@ -69,6 +71,10 @@ class MyApp extends StatelessWidget {
             return _createRoute(const CartPage());
           } else if (settings.name == AppRoutes.orders) {
             return _createRoute(const OrdersPage());
+          } else if (settings.name == AppRoutes.products) {
+            return _createRoute(const ProductsPage());
+          } else if (settings.name == AppRoutes.productForm) {
+            return _createRoute(const ProductFormPage());
           }
           return _createRoute(const ProductsOverviewPage());
         },

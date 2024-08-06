@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop/components/product_item.dart';
+import 'package:shop/components/product_grid_item.dart';
 import 'package:shop/models/product.dart';
 import 'package:shop/providers/product_list_provider.dart';
 
@@ -22,7 +22,7 @@ class ProductGrid extends StatelessWidget {
         mainAxisSpacing: 20,
       ),
       itemCount: loadProducts.length,
-      itemBuilder: (ctx, index) => ProductItem(product: loadProducts[index]),
+      itemBuilder: (ctx, index) => ProductGridItem(product: loadProducts[index]),
     );
   }
 }
