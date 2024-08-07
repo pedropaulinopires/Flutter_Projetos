@@ -1,20 +1,13 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/models/cart_item.dart';
 import 'package:shop/providers/cart_provider.dart';
-import 'package:shop/providers/product_list_provider.dart';
 
 class CartItemWidget extends StatelessWidget {
   const CartItemWidget({super.key, required this.cartItem});
   final CartItem cartItem;
   @override
   Widget build(BuildContext context) {
-    final product = Provider.of<ProductListProvider>(context, listen: false)
-        .items()
-        .firstWhere((x) => x.id == cartItem.productId);
-
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
 
     return Dismissible(
@@ -31,12 +24,16 @@ class CartItemWidget extends StatelessWidget {
               title: const Text('Tem certeza'),
               content: const Text('Você deseja remover o produto do carrinho?'),
               actions: [
-                TextButton(onPressed: () {
-                  Navigator.of(context).pop(false);
-                }, child: const Text('Não')),
-                TextButton(onPressed: () {
-                  Navigator.of(context).pop(true);
-                }, child: const Text('Sim'))
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
+                    child: const Text('Não')),
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    },
+                    child: const Text('Sim'))
               ],
             );
           },
@@ -60,22 +57,13 @@ class CartItemWidget extends StatelessWidget {
           ),
         ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: Card(
-          margin: const EdgeInsets.only(bottom: 15),
-          child: ListTile(
-            leading: ClipRRect(
-              borderRadius: BorderRadius.circular(50),
-              child: CircleAvatar(
-                backgroundImage: NetworkImage(product.imageUrl)
-              ),
-            ),
-            title: Text(cartItem.title),
-            subtitle: Text(
-                'Valor total: R\$ ${(cartItem.price * cartItem.quantity).toStringAsFixed(2).replaceAll('.', ',')}'),
-            trailing: Text('${cartItem.quantity}x'),
-          ),
+      child: Card(
+        margin: const EdgeInsets.only(bottom: 15, left: 15, right: 15),
+        child: ListTile(
+          title: Text(cartItem.title),
+          subtitle: Text(
+              'Valor total: R\$ ${(cartItem.price * cartItem.quantity).toStringAsFixed(2).replaceAll('.', ',')}'),
+          trailing: Text('${cartItem.quantity}x'),
         ),
       ),
     );

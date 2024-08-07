@@ -74,7 +74,9 @@ class MyApp extends StatelessWidget {
           } else if (settings.name == AppRoutes.products) {
             return _createRoute(const ProductsPage());
           } else if (settings.name == AppRoutes.productForm) {
-            return _createRoute(const ProductFormPage());
+            return _createRoute(ProductFormPage(
+              product: settings.arguments as Product?,
+            ));
           }
           return _createRoute(const ProductsOverviewPage());
         },

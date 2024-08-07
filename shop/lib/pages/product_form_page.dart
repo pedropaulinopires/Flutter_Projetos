@@ -1,11 +1,13 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shop/models/product.dart';
+import 'package:shop/providers/product_list_provider.dart';
 
 class ProductFormPage extends StatefulWidget {
-  const ProductFormPage({super.key});
-
+  const ProductFormPage({super.key, this.product});
+  final Product? product;
   @override
   State<ProductFormPage> createState() => _ProductFormPageState();
 }
@@ -22,6 +24,15 @@ class _ProductFormPageState extends State<ProductFormPage> {
   void initState() {
     super.initState();
     _urlFocus.addListener(setImage);
+    if(_formData.isEmpty && widget.product != null){
+      _formData['id'] = widget.product!.id;
+      _formData['title'] = widget.product!.title;
+      _formData['price'] = widget.product!.price;
+      _formData['description'] = widget.product!.description;
+      _formData['imageUrl'] = widget.product!.imageUrl;
+      _formData['isFavorite'] = widget.product!.isFavorite;
+      _urlController.text = _formData['imageUrl'] as String; 
+    }
   }
 
   @override
@@ -45,13 +56,15 @@ class _ProductFormPageState extends State<ProductFormPage> {
     }
 
     _formKey.currentState?.save();
-    var newProduct = Product(
-      id: Random().nextDouble().toString(),
-      title: _formData['title'] as String,
-      description: _formData['description'] as String,
-      price: _formData['price'] as double,
-      imageUrl: _formData['imageUrl'] as String,
-    );
+
+    Provider.of<ProductListProvider>(context, listen: false)
+        .saveProduct(_formData);
+    Navigator.of(context).pop();
+  }
+
+  bool validateImgUrl(String url) {
+    final urlValid = Uri.tryParse(url)?.hasAbsolutePath ?? false;
+    return urlValid;
   }
 
   @override
@@ -68,6 +81,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
           child: ListView(
             children: [
               TextFormField(
+                initialValue: _formData['title']?.toString(),
                 decoration: const InputDecoration(label: Text('Nome')),
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (_) =>
@@ -83,6 +97,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                 },
               ),
               TextFormField(
+                initialValue: _formData['price']?.toString(),
                 decoration: const InputDecoration(label: Text('Preço')),
                 keyboardType:
                     const TextInputType.numberWithOptions(decimal: true),
@@ -92,20 +107,38 @@ class _ProductFormPageState extends State<ProductFormPage> {
                     FocusScope.of(context).requestFocus(_descriptionFocus),
                 onSaved: (price) =>
                     _formData['price'] = double.parse(price ?? '0'),
+                validator: (_price) {
+                  final price = double.tryParse(_price ?? '0');
+
+                  if (price == null || price < 0) {
+                    return 'É necessário informar um valor maior que 0!';
+                  }
+                  return null;
+                },
               ),
               TextFormField(
+                initialValue: _formData['description']?.toString(),
                 decoration: const InputDecoration(label: Text('Descrição')),
                 focusNode: _descriptionFocus,
                 keyboardType: TextInputType.multiline,
                 maxLines: 3,
                 onSaved: (description) =>
                     _formData['description'] = description ?? '',
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'A descrição do produto é obrigatório!';
+                  } else if (value.length < 10) {
+                    return 'A descrição do produto teve conter no mínimo 10 caracteres!';
+                  }
+                  return null;
+                },
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Expanded(
                     child: TextFormField(
+                      // initialValue: _formData['imageUrl']?.toString(),
                       decoration:
                           const InputDecoration(label: Text('Url da imagem')),
                       focusNode: _urlFocus,
@@ -114,6 +147,13 @@ class _ProductFormPageState extends State<ProductFormPage> {
                       onSaved: (imageUrl) =>
                           _formData['imageUrl'] = imageUrl ?? '',
                       onFieldSubmitted: (_) => _submit(),
+                      validator: (_urlImage) {
+                        final urlImage = _urlImage ?? '';
+                        if (!validateImgUrl(urlImage)) {
+                          return 'É necessário informar uma URL válida!';
+                        }
+                        return null;
+                      },
                     ),
                   ),
                   Container(
