@@ -30,7 +30,7 @@ class AppDrawer extends StatelessWidget {
             title: const Text('Pedidos'),
             onTap: () {
               Navigator.of(context).pushNamed(AppRoutes.orders);
-              Future.delayed(const Duration(milliseconds: 300), ()=> closeDrawer());
+              Future.delayed(const Duration(milliseconds: 200), ()=> closeDrawer());
             },
           ),
           const Divider(),
@@ -39,7 +39,7 @@ class AppDrawer extends StatelessWidget {
             title: const Text('Gerenciar produtos'),
             onTap: () {
               Navigator.of(context).pushNamed(AppRoutes.products);
-              Future.delayed(const Duration(milliseconds: 300), ()=> closeDrawer());
+              Future.delayed(const Duration(milliseconds: 200), ()=> closeDrawer());
             },
           ),
           const Divider(),
