@@ -12,7 +12,7 @@ class ProductGridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<ProductListProvider>(context);
+    final provider = Provider.of<ProductListProvider>(context, listen: false);
     final providerCart = Provider.of<CartProvider>(context, listen: false);
 
     return ClipRRect(

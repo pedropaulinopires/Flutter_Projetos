@@ -12,4 +12,15 @@ class CartItem {
     required this.quantity,
     required this.price,
   });
+
+  // Método para converter CartItem em um mapa serializável
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'productId': productId,
+      'title': title,
+      'price': price,
+      'quantity': quantity,
+    };
+  }
 }

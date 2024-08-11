@@ -1,3 +1,4 @@
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/models/product.dart';
@@ -5,8 +6,23 @@ import 'package:shop/providers/product_list_provider.dart';
 import 'package:shop/utils/app_routes.dart';
 
 class ProductItem extends StatelessWidget {
-  const ProductItem({super.key, required this.product});
+  const ProductItem({
+    super.key,
+    required this.product,
+    required this.showAlert,
+  });
   final Product product;
+  final void Function(CoolAlertType type, String title, String? message)
+      showAlert;
+
+  Future<void> _editProduct(BuildContext context) async {
+    final result = await Navigator.of(context)
+        .pushNamed(AppRoutes.productForm, arguments: product);
+
+    if (result == 'update') {
+      showAlert(CoolAlertType.success, "Produto editado com sucesso !", null);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +36,7 @@ class ProductItem extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           IconButton(
-            onPressed: () => Navigator.of(context)
-                .pushNamed(AppRoutes.productForm, arguments: product),
+            onPressed: () => _editProduct(context),
             icon: const Icon(Icons.edit),
             color: Theme.of(context).colorScheme.primary,
           ),
@@ -29,31 +44,39 @@ class ProductItem extends StatelessWidget {
             width: 10,
           ),
           IconButton(
-            onPressed: () {
+            onPressed: () async {
               showDialog(
-                context: context,
-                builder: (ctx) {
-                  return AlertDialog(
-                    title: const Text('Excluir produto'),
-                    content:
-                        const Text('Você realmente deseja excluir o produto?'),
-                    actions: [
-                      TextButton(
+                  context: context,
+                  builder: (ctx) {
+                    return AlertDialog(
+                      title: const Text('Excluir produto'),
+                      content: const Text(
+                          'Você realmente deseja remover o produto?'),
+                      actions: [
+                        TextButton(
+                          child: const Text('Não'),
+                          onPressed: () => Navigator.of(ctx).pop(),
+                        ),
+                        TextButton(
+                          child: const Text('Sim'),
                           onPressed: () {
                             Navigator.of(ctx).pop();
+                            Provider.of<ProductListProvider>(context,
+                                    listen: false)
+                                .deleteProduct(product)
+                                .then((onValue) => showAlert(
+                                    CoolAlertType.success,
+                                    "Sucesso ao remover o produto !",
+                                    null))
+                                .catchError((onError) => showAlert(
+                                    CoolAlertType.error,
+                                    "Erro ao remover o produto !",
+                                    null));
                           },
-                          child: const Text('Não')),
-                      TextButton(
-                          onPressed: () {
-                            Provider.of<ProductListProvider>(context, listen: false)
-                                .deleteProduct(product);
-                            Navigator.of(ctx).pop();
-                          },
-                          child: const Text('Sim')),
-                    ],
-                  );
-                },
-              );
+                        )
+                      ],
+                    );
+                  });
             },
             icon: const Icon(Icons.delete),
             color: Colors.red,

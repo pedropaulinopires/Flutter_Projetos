@@ -9,24 +9,40 @@ import 'package:shop/utils/app_routes.dart';
 
 enum FilterItems { favoties, all }
 
-class ProductsOverviewPage extends StatelessWidget {
+class ProductsOverviewPage extends StatefulWidget {
   const ProductsOverviewPage({super.key});
+
+  @override
+  State<ProductsOverviewPage> createState() => _ProductsOverviewPageState();
+}
+
+class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<ProductListProvider>(context, listen: false)
+        .loadPodcts()
+        .then((v) {
+      setState(() => _isLoading = false);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<ProductListProvider>(context);
-
-    GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+    GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
     void closeDrawer() {
-      if (_scaffoldKey.currentState != null &&
-          _scaffoldKey.currentState!.isDrawerOpen) {
-        _scaffoldKey.currentState!.openEndDrawer();
+      if (scaffoldKey.currentState != null &&
+          scaffoldKey.currentState!.isDrawerOpen) {
+        scaffoldKey.currentState!.openEndDrawer();
       }
     }
 
     return Scaffold(
-      key: _scaffoldKey,
+      key: scaffoldKey,
       drawer: AppDrawer(closeDrawer: closeDrawer),
       appBar: AppBar(
         title: const Text('Minha loja'),
@@ -68,9 +84,13 @@ class ProductsOverviewPage extends StatelessWidget {
           ),
         ],
       ),
-      body: const SafeArea(
-        child: ProductGrid(),
-      ),
+      body: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : const SafeArea(
+              child: ProductGrid(),
+            ),
     );
   }
 }
