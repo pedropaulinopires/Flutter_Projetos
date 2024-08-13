@@ -29,43 +29,46 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
     });
   }
 
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+  void _closeDrawer() {
+    if (scaffoldKey.currentState != null &&
+        scaffoldKey.currentState!.isDrawerOpen) {
+      scaffoldKey.currentState!.openEndDrawer();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<ProductListProvider>(context);
-    GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-
-    void closeDrawer() {
-      if (scaffoldKey.currentState != null &&
-          scaffoldKey.currentState!.isDrawerOpen) {
-        scaffoldKey.currentState!.openEndDrawer();
-      }
-    }
-
     return Scaffold(
       key: scaffoldKey,
-      drawer: AppDrawer(closeDrawer: closeDrawer),
+      drawer: AppDrawer(closeDrawer: _closeDrawer),
       appBar: AppBar(
         title: const Text('Minha loja'),
         actions: [
-          PopupMenuButton(
-            itemBuilder: (ctx) {
-              return [
-                const PopupMenuItem(
-                  value: FilterItems.favoties,
-                  child: Text('Somente favoritos'),
-                ),
-                const PopupMenuItem(
-                  value: FilterItems.all,
-                  child: Text('Filtrar todos'),
-                )
-              ];
-            },
-            onSelected: (value) {
-              if (value == FilterItems.all) {
-                provider.filterAll();
-              } else {
-                provider.filterFavorites();
-              }
+          Consumer<ProductListProvider>(
+            builder: (context, providerItems, child) {
+              return PopupMenuButton(
+                itemBuilder: (ctx) {
+                  return [
+                    const PopupMenuItem(
+                      value: FilterItems.favoties,
+                      child: Text('Somente favoritos'),
+                    ),
+                    const PopupMenuItem(
+                      value: FilterItems.all,
+                      child: Text('Filtrar todos'),
+                    )
+                  ];
+                },
+                onSelected: (value) {
+                  if (value == FilterItems.all) {
+                    providerItems.filterAll();
+                  } else {
+                    providerItems.filterFavorites();
+                  }
+                },
+              );
             },
           ),
           Consumer<CartProvider>(

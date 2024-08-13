@@ -13,31 +13,31 @@ class ProductGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Product> loadProducts =
-        Provider.of<ProductListProvider>(context).itemsGrid();
-
-    return loadProducts.isEmpty
-        ? const Center(
-            child: Text(
-              'Sem produtos cadastrados!',
-              style: TextStyle(fontSize: 19),
-            ),
-          )
-        : RefreshIndicator(
-            onRefresh: () => _refreshProducts(context),
-            child: GridView.builder(
-              padding: const EdgeInsets.all(10),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisExtent: 150,
-                childAspectRatio: 3 / 2,
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 20,
+    return Consumer<ProductListProvider>(builder: (context, provider, child) {
+      final List<Product> loadProducts = provider.itemsGrid();
+      return loadProducts.isEmpty
+          ? const Center(
+              child: Text(
+                'Sem produtos cadastrados!',
+                style: TextStyle(fontSize: 19),
               ),
-              itemCount: loadProducts.length,
-              itemBuilder: (ctx, index) =>
-                  ProductGridItem(product: loadProducts[index]),
-            ),
-          );
+            )
+          : RefreshIndicator(
+              onRefresh: () => _refreshProducts(context),
+              child: GridView.builder(
+                padding: const EdgeInsets.all(10),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisExtent: 150,
+                  childAspectRatio: 3 / 2,
+                  crossAxisSpacing: 20,
+                  mainAxisSpacing: 20,
+                ),
+                itemCount: loadProducts.length,
+                itemBuilder: (ctx, index) =>
+                    ProductGridItem(product: loadProducts[index]),
+              ),
+            );
+    });
   }
 }

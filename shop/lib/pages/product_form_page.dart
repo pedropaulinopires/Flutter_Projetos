@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/models/product.dart';
 import 'package:shop/providers/product_list_provider.dart';
+import 'package:shop/utils/app_show_message.dart';
 
 class ProductFormPage extends StatefulWidget {
   const ProductFormPage({super.key, this.product});
@@ -72,12 +73,8 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
       if (!mounted) return;
 
-      CoolAlert.show(
-          title: 'Erro ao salvar produto !',
-          context: context,
-          type: CoolAlertType.error,
-          backgroundColor: Colors.purple,
-          animType: CoolAlertAnimType.scale);
+      AppShowMessage.showAlert(
+          context, CoolAlertType.error, 'Erro ao salvar produto !', null);
     }
   }
 

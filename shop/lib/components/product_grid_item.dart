@@ -12,9 +12,6 @@ class ProductGridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<ProductListProvider>(context, listen: false);
-    final providerCart = Provider.of<CartProvider>(context, listen: false);
-
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
@@ -24,25 +21,35 @@ class ProductGridItem extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           backgroundColor: Colors.black87,
-          leading: IconButton(
-            onPressed: () => provider.favoriteProduct(product),
-            icon: Icon(
-              Icons.favorite,
-              color: product.isFavorite ? Colors.red : Colors.white,
-            ),
-          ),
-          trailing: IconButton(
-            onPressed: () {
-              providerCart.addItem(product);
-              ScaffoldMessenger.of(context).hideCurrentSnackBar();
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: const Text('Produto adicionado no carrinho!'),
-                action: SnackBarAction(label: 'DESFAZER', onPressed: () {
-                  providerCart.removeSingleItem(product.id);
-                }),
-              ));
+          leading: Consumer<ProductListProvider>(
+            builder: (context, providerList, child) {
+              return IconButton(
+                onPressed: () => providerList.favoriteProduct(product),
+                icon: Icon(
+                  Icons.favorite,
+                  color: product.isFavorite ? Colors.red : Colors.white,
+                ),
+              );
             },
-            icon: const Icon(Icons.shopping_cart),
+          ),
+          trailing: Consumer<CartProvider>(
+            builder: (context, providerCart, child) {
+              return IconButton(
+                onPressed: () {
+                  providerCart.addItem(product);
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: const Text('Produto adicionado no carrinho!'),
+                    action: SnackBarAction(
+                        label: 'DESFAZER',
+                        onPressed: () {
+                          providerCart.removeSingleItem(product.id);
+                        }),
+                  ));
+                },
+                icon: const Icon(Icons.shopping_cart),
+              );
+            },
           ),
         ),
         child: GestureDetector(

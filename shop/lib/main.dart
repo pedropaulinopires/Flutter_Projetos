@@ -1,37 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:shop/models/product.dart';
+import 'package:shop/pages/auth_page.dart';
 import 'package:shop/pages/cart_page.dart';
 import 'package:shop/pages/orders_page.dart';
 import 'package:shop/pages/product_detail_page.dart';
 import 'package:shop/pages/product_form_page.dart';
 import 'package:shop/pages/products_overview_page.dart';
 import 'package:shop/pages/products_page.dart';
+import 'package:shop/providers/auth_provider.dart';
 import 'package:shop/providers/cart_provider.dart';
 import 'package:shop/providers/order_list_provider.dart';
 import 'package:shop/providers/product_list_provider.dart';
+import 'package:shop/utils/app_create_route.dart';
 import 'package:shop/utils/app_routes.dart';
 import 'package:provider/provider.dart';
 
 void main() => runApp(const MyApp());
-
-Route _createRoute(Widget widget, {bool animatedExecut = true}) {
-  return PageRouteBuilder(
-    opaque: true,
-    pageBuilder: (context, animation, secondaryAnimation) => widget,
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      var begin = animatedExecut ? const Offset(1, 0) : const Offset(0, 0);
-      var end = Offset.zero;
-      var curve = Curves.fastOutSlowIn;
-
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-      return SlideTransition(
-        position: animation.drive(tween),
-        child: child,
-      );
-    },
-  );
-}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -43,6 +27,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (ctx) => ProductListProvider()),
         ChangeNotifierProvider(create: (ctx) => CartProvider()),
         ChangeNotifierProvider(create: (ctx) => OrderListProvider()),
+        ChangeNotifierProvider(create: (ctx) => AuthProvider()),
       ],
       child: MaterialApp(
         title: 'Shop',
@@ -57,28 +42,29 @@ class MyApp extends StatelessWidget {
               foregroundColor: Colors.white,
             ),
             textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Lato')),
-        home: const ProductsOverviewPage(),
         debugShowCheckedModeBanner: false,
-        initialRoute: AppRoutes.home,
+        initialRoute: AppRoutes.auth,
         onGenerateRoute: (settings) {
-          if (settings.name == AppRoutes.home) {
-            return _createRoute(const ProductsOverviewPage());
+          if (settings.name == AppRoutes.auth) {
+            return AppCreateRoute.createRoute(const AuthPage());
+          } else if (settings.name == AppRoutes.home) {
+            return AppCreateRoute.createRoute(const ProductsOverviewPage());
           } else if (settings.name == AppRoutes.productDetail) {
-            return _createRoute(
+            return AppCreateRoute.createRoute(
                 ProductDetailPage(product: settings.arguments as Product),
                 animatedExecut: true);
           } else if (settings.name == AppRoutes.cart) {
-            return _createRoute(const CartPage());
+            return AppCreateRoute.createRoute(const CartPage());
           } else if (settings.name == AppRoutes.orders) {
-            return _createRoute(const OrdersPage());
+            return AppCreateRoute.createRoute(const OrdersPage());
           } else if (settings.name == AppRoutes.products) {
-            return _createRoute(const ProductsPage());
+            return AppCreateRoute.createRoute(const ProductsPage());
           } else if (settings.name == AppRoutes.productForm) {
-            return _createRoute(ProductFormPage(
+            return AppCreateRoute.createRoute(ProductFormPage(
               product: settings.arguments as Product?,
             ));
           }
-          return _createRoute(const ProductsOverviewPage());
+          return AppCreateRoute.createRoute(const ProductsOverviewPage());
         },
       ),
     );

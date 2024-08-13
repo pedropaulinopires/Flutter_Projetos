@@ -4,19 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:shop/components/product_item.dart';
 import 'package:shop/providers/product_list_provider.dart';
 import 'package:shop/utils/app_routes.dart';
+import 'package:shop/utils/app_show_message.dart';
 
 class ProductsPage extends StatelessWidget {
   const ProductsPage({super.key});
-
-    void showAlert(BuildContext context, CoolAlertType type, String title, String? message) {
-      CoolAlert.show(
-        title: title,
-        context: context,
-        type: type,
-        backgroundColor: Colors.purple,
-        autoCloseDuration: const Duration(seconds: 3),
-      );
-    }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +21,7 @@ class ProductsPage extends StatelessWidget {
                     .pushNamed(AppRoutes.productForm)
                     .then((result) {
                   if (result == 'save') {
-                    showAlert(context,CoolAlertType.success,
+                    AppShowMessage.showAlert(context, CoolAlertType.success,
                         "Produto salvo com sucesso !", null);
                   }
                 });
@@ -49,7 +40,9 @@ class ProductsPage extends StatelessWidget {
                 children: [
                   ProductItem(
                     product: products[index],
-                    showAlert: ( CoolAlertType type, String title, String? message) => showAlert(context, type, title, message),
+                    showAlert: (CoolAlertType type, String title,
+                            String? message) =>
+                        AppShowMessage.showAlert(context, type, title, message),
                   ),
                   const Divider()
                 ],
