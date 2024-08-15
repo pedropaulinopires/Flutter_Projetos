@@ -37,16 +37,21 @@ class _OrdersPageState extends State<OrdersPage> {
               padding: const EdgeInsets.only(top: 8.0),
               child: Consumer<OrderListProvider>(
                 builder: (context, value, child) {
-                  return RefreshIndicator(
-                    onRefresh: () =>
-                        Provider.of<OrderListProvider>(context, listen: false)
-                            .loadProducs(),
-                    child: ListView.builder(
-                      itemCount: value.items.length,
-                      itemBuilder: (context, index) =>
-                          OrderItem(order: value.items[index]),
-                    ),
-                  );
+                  return value.items.isEmpty
+                      ? const Center(
+                          child: Text('Você não realizou nenhum pedido!', style: TextStyle(fontSize: 19),),
+                        )
+                      : RefreshIndicator(
+                          onRefresh: () => Provider.of<OrderListProvider>(
+                                  context,
+                                  listen: false)
+                              .loadProducs(),
+                          child: ListView.builder(
+                            itemCount: value.items.length,
+                            itemBuilder: (context, index) =>
+                                OrderItem(order: value.items[index]),
+                          ),
+                        );
                 },
               ),
             ),

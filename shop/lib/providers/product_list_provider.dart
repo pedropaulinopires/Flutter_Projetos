@@ -6,7 +6,9 @@ import 'package:http/http.dart' as http;
 import 'package:shop/models/product.dart';
 
 class ProductListProvider with ChangeNotifier {
-  final List<Product> _items = [];
+  final List<Product> _items;
+  final String _token;
+  final String _idUser;
   bool _filterFavorites = false;
   static const _urlBase = 'https://treino-app-1234-default-rtdb.firebaseio.com';
   List<Product> items() => [..._items];
@@ -18,6 +20,8 @@ class ProductListProvider with ChangeNotifier {
     return [..._items];
   }
 
+  ProductListProvider(this._token, this._idUser, this._items);
+
   Future<void> favoriteProduct(Product product) async {
     _items
         .firstWhere(
@@ -25,10 +29,11 @@ class ProductListProvider with ChangeNotifier {
         )
         .toggleFavorite();
     notifyListeners();
-    
-    final response = await http.patch(
-        Uri.parse('$_urlBase/products/${product.id}.json'),
-        body: jsonEncode({"isFavorite": product.isFavorite}));
+
+    final response = await http.put(
+        Uri.parse(
+            '$_urlBase/userFavorite/$_idUser/${product.id}.json?auth=$_token'),
+        body: jsonEncode(product.isFavorite));
 
     if (response.statusCode >= 400) {
       _items
@@ -36,15 +41,20 @@ class ProductListProvider with ChangeNotifier {
             (element) => element.id == product.id,
           )
           .toggleFavorite();
+      notifyListeners();
       throw Exception('Erro ao adicionar no favorito!');
     }
   }
 
   Future<void> loadPodcts() async {
     _items.clear();
-    final response = await http.get(Uri.parse('$_urlBase/products.json'));
+    final response =
+        await http.get(Uri.parse('$_urlBase/products.json?auth=$_token'));
     if (response.body == 'null') return;
     Map<String, dynamic> data = jsonDecode(response.body);
+
+    List<Product> prodcutsFavorites = await getProdcutsFavorites();
+
     data.forEach((key, value) {
       _items.add(Product(
           id: key,
@@ -52,9 +62,32 @@ class ProductListProvider with ChangeNotifier {
           description: value['description'] as String,
           price: value['price'] as double,
           imageUrl: value['imageUrl'] as String,
-          isFavorite: value['isFavorite'] as bool));
+          isFavorite:
+              prodcutsFavorites.any((x) => x.id == key && x.isFavorite)));
+
       notifyListeners();
     });
+  }
+
+  Future<List<Product>> getProdcutsFavorites() async {
+    List<Product> lista = [];
+    final response = await http
+        .get(Uri.parse('$_urlBase/userFavorite/$_idUser.json?auth=$_token'));
+    if (response.body == 'null') return lista;
+    final Map<String, dynamic> body = jsonDecode(response.body);
+
+    body.forEach((key, value) {
+      lista.add(Product(
+        id: key,
+        title: '',
+        description: '',
+        price: 0,
+        imageUrl: '',
+        isFavorite: value
+      ));
+    });
+
+    return lista;
   }
 
   void filterFavorites() {
@@ -75,7 +108,6 @@ class ProductListProvider with ChangeNotifier {
       description: data['description'] as String,
       price: data['price'] as double,
       imageUrl: data['imageUrl'] as String,
-      isFavorite: hasId ? data['isFavorite'] as bool : false,
     );
 
     if (hasId) {
@@ -87,13 +119,12 @@ class ProductListProvider with ChangeNotifier {
 
   Future<void> addProduct(Product product) async {
     final response = await http.post(
-      Uri.parse('$_urlBase/products.json'),
+      Uri.parse('$_urlBase/products.json?auth=$_token'),
       body: jsonEncode({
         "title": product.title,
         "description": product.description,
         "price": product.price,
         "imageUrl": product.imageUrl,
-        "isFavorite": product.isFavorite,
       }),
     );
 
@@ -108,7 +139,7 @@ class ProductListProvider with ChangeNotifier {
     final index = _items.indexWhere((p) => p.id == data['id']);
 
     final response = await http.patch(
-      Uri.parse('$_urlBase/products/${product.id}.json'),
+      Uri.parse('$_urlBase/products/${product.id}.json?auth=$_token'),
       body: jsonEncode({
         "title": product.title,
         "description": product.description,
@@ -127,8 +158,8 @@ class ProductListProvider with ChangeNotifier {
     _items.remove(product);
     notifyListeners();
 
-    final response =
-        await http.delete(Uri.parse('$_urlBase/products/${product.id}.json'));
+    final response = await http.delete(
+        Uri.parse('$_urlBase/products/${product.id}.json?auth=$_token'));
 
     if (response.statusCode >= 400) {
       _items.insert(index, product);

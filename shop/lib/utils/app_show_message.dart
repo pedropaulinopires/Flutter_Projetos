@@ -8,7 +8,6 @@ class AppShowMessage{
         context: context,
         type: type,
         backgroundColor: Colors.purple,
-        autoCloseDuration: const Duration(seconds: 3),
         showCancelBtn: false
       );
     }

@@ -1,6 +1,9 @@
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop/exceptions/auth_exceptions.dart';
 import 'package:shop/providers/auth_provider.dart';
+import 'package:shop/utils/app_show_message.dart';
 
 enum AuthMode { singup, login }
 
@@ -39,12 +42,21 @@ class _AuthFormState extends State<AuthForm> {
     _formKey.currentState?.save();
 
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    if (_isLogin()) {
-      //LOGIN
-      await authProvider.singin(_authData['email']!, _authData['password']!);
-    } else {
-      //REGISTRAR
-      await authProvider.singup(_authData['email']!, _authData['password']!);
+
+    try {
+      if (_isLogin()) {
+        //LOGIN
+        await authProvider.singin(_authData['email']!, _authData['password']!);
+      } else {
+        //REGISTRAR
+        await authProvider.singup(_authData['email']!, _authData['password']!);
+      }
+    } on AuthExceptions catch (error) {
+      AppShowMessage.showAlert(
+          context, CoolAlertType.error, error.toString(), null);
+    } catch (error) {
+      AppShowMessage.showAlert(
+          context, CoolAlertType.error, error.toString(), null);
     }
 
     setState(() => _isLoading = false);

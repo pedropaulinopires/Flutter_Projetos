@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shop/models/product.dart';
+import 'package:shop/pages/auth_or_home_page.dart';
 import 'package:shop/pages/auth_page.dart';
 import 'package:shop/pages/cart_page.dart';
 import 'package:shop/pages/orders_page.dart';
@@ -24,10 +25,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (ctx) => ProductListProvider()),
-        ChangeNotifierProvider(create: (ctx) => CartProvider()),
-        ChangeNotifierProvider(create: (ctx) => OrderListProvider()),
         ChangeNotifierProvider(create: (ctx) => AuthProvider()),
+        ChangeNotifierProxyProvider<AuthProvider, ProductListProvider>(
+          create: (ctx) => ProductListProvider('', '', []),
+          update: (context, authProvider, previous) => ProductListProvider(
+              authProvider.token ?? '',  authProvider.userId ?? '', previous?.items() ?? []),
+        ),
+        ChangeNotifierProvider(create: (ctx) => CartProvider()),
+        ChangeNotifierProxyProvider<AuthProvider, OrderListProvider>(
+          create: (ctx) => OrderListProvider('', '', []),
+          update: (context, authProvider, previous) => OrderListProvider(
+              authProvider.token ?? '', authProvider.userId ?? '', previous?.items ?? []),
+        ),
       ],
       child: MaterialApp(
         title: 'Shop',
@@ -43,9 +52,11 @@ class MyApp extends StatelessWidget {
             ),
             textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Lato')),
         debugShowCheckedModeBanner: false,
-        initialRoute: AppRoutes.auth,
+        initialRoute: AppRoutes.initial,
         onGenerateRoute: (settings) {
-          if (settings.name == AppRoutes.auth) {
+          if (settings.name == AppRoutes.initial) {
+            return AppCreateRoute.createRoute(const AuthOrHomePage());
+          } else if (settings.name == AppRoutes.auth) {
             return AppCreateRoute.createRoute(const AuthPage());
           } else if (settings.name == AppRoutes.home) {
             return AppCreateRoute.createRoute(const ProductsOverviewPage());
