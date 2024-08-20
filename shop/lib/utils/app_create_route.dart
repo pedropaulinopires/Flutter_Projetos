@@ -13,8 +13,12 @@ class AppCreateRoute {
         var tween =
             Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
-        return SlideTransition(
-          position: animation.drive(tween),
+        // return SlideTransition(
+        //   position: animation.drive(tween),
+        //   child: child,
+        // );
+        return FadeTransition(
+          opacity: animation,
           child: child,
         );
       },

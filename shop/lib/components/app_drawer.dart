@@ -31,9 +31,8 @@ class AppDrawer extends StatelessWidget {
             leading: const Icon(Icons.add_card_rounded),
             title: const Text('Pedidos'),
             onTap: () {
+              closeDrawer();
               Navigator.of(context).pushNamed(AppRoutes.orders);
-              Future.delayed(
-                  const Duration(milliseconds: 200), () => closeDrawer());
             },
           ),
           const Divider(),
@@ -41,9 +40,8 @@ class AppDrawer extends StatelessWidget {
             leading: const Icon(Icons.edit),
             title: const Text('Gerenciar produtos'),
             onTap: () {
+              closeDrawer();
               Navigator.of(context).pushNamed(AppRoutes.products);
-              Future.delayed(
-                  const Duration(milliseconds: 200), () => closeDrawer());
             },
           ),
           const Divider(),
