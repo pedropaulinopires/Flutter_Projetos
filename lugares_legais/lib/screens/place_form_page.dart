@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:lugares_legais/components/image_input.dart';
+import 'package:lugares_legais/components/location_input.dart';
 import 'package:lugares_legais/provider/greate_places.dart';
 import 'package:provider/provider.dart';
 
@@ -17,16 +18,17 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
   final _titleController = TextEditingController();
   File? _pickedImage;
 
-  void _selectedImage(File file){
+  void _selectedImage(File file) {
     _pickedImage = file;
   }
 
-  void _submiForm(){
-    if(_titleController.text.isEmpty || _pickedImage == null){
+  void _submiForm() {
+    if (_titleController.text.isEmpty || _pickedImage == null) {
       return;
     }
 
-    Provider.of<GreatePlaces>(context, listen: false).addPlace(_titleController.text, _pickedImage!);
+    Provider.of<GreatePlaces>(context, listen: false)
+        .addPlace(_titleController.text, _pickedImage!);
 
     Navigator.of(context).pop();
   }
@@ -37,7 +39,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
         appBar: AppBar(
           title: const Text('Novo lugar'),
         ),
-        resizeToAvoidBottomInset : false,
+        resizeToAvoidBottomInset: false,
         body: Stack(children: [
           Column(
             children: [
@@ -56,7 +58,11 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                       const SizedBox(
                         height: 25,
                       ),
-                       ImageInput(selectedImage: _selectedImage),
+                      ImageInput(selectedImage: _selectedImage),
+                      const SizedBox(
+                        height: 25,
+                      ),
+                      const LocationInput()
                     ],
                   ),
                 ),
