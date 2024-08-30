@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:chat/components/user_image_picker.dart';
-import 'package:chat/models/auth_form_data.dart';
+import 'package:chat/core/models/auth_form_data.dart';
 import 'package:flutter/material.dart';
 
 class AuthForm extends StatefulWidget {
@@ -32,24 +32,6 @@ class _AuthFormState extends State<AuthForm> {
   void submit() {
     final valid = _formKey.currentState?.validate() ?? false;
     if (!valid) return;
-
-    if (_authFormData.image == null && _authFormData.isSignup) {
-      ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            backgroundColor: Theme.of(context).colorScheme.error,
-            content: const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Imagem não selecionada!',
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            )),
-      );
-      return;
-    }
 
     widget.onSubmit(_authFormData);
   }
