@@ -16,7 +16,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
+        appBarTheme: const AppBarTheme(
+          color: Colors.blue,
+          foregroundColor: Colors.white,
+          toolbarHeight: 75,
+          centerTitle: true
+        )
       ),
+      
       home: const AuthOrAppPage()
     );
   }
