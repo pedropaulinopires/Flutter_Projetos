@@ -12,7 +12,7 @@ class ChatMockServe implements ChatService {
       text: 'Olá, seja bem vindo !',
       createdAt: DateTime.now(),
       userId: '1',
-      userName: 'teste',
+      userName: 'Pedro',
       userImageUrl: 'assets/images/avatar.png',
     ),
     ChatMessage(
@@ -35,7 +35,7 @@ class ChatMockServe implements ChatService {
   static MultiStreamController<List<ChatMessage>>? _controller;
   static final _msgStreams = Stream<List<ChatMessage>>.multi((controller) {
     _controller = controller;
-    _controller?.add(_msgs);
+    _controller?.add(_msgs.reversed.toList());
   });
 
   @override
@@ -54,7 +54,7 @@ class ChatMockServe implements ChatService {
 
     _msgs.add(chatMessage);
 
-    _controller?.add(_msgs);
+    _controller?.add(_msgs.reversed.toList());
 
     return chatMessage;
   }
