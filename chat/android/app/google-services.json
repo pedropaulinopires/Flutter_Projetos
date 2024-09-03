@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "472495567205",
+    "project_id": "chat-pires",
+    "storage_bucket": "chat-pires.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:472495567205:android:a5d21d0f71f2faadc7718c",
+        "android_client_info": {
+          "package_name": "br.com.pedropires.chatpires"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDl9IoWnsdwhwrTE7HpBfkujaoYJNCSvRg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
