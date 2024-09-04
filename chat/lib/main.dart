@@ -22,25 +22,26 @@ class MyApp extends StatelessWidget {
         )
       ],
       child: MaterialApp(
-          title: 'Chat',
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-              useMaterial3: true,
-              appBarTheme: const AppBarTheme(
-                  color: Colors.blue,
-                  foregroundColor: Colors.white,
-                  toolbarHeight: 75,
-                  centerTitle: true)),
-          initialRoute: AppRoutes.initial,
-          onGenerateRoute: (settings) {
-            if (settings.name == AppRoutes.initial) {
-              return AppCreateRoute.createRoute(const AuthOrAppPage());
-            } else if (settings.name == AppRoutes.notifications) {
-              return AppCreateRoute.createRoute(const NotificationPage());
-            }
+        title: 'Chat',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+            useMaterial3: true,
+            appBarTheme: const AppBarTheme(
+                color: Colors.blue,
+                foregroundColor: Colors.white,
+                toolbarHeight: 75,
+                centerTitle: true)),
+        initialRoute: AppRoutes.initial,
+        onGenerateRoute: (settings) {
+          if (settings.name == AppRoutes.initial) {
             return AppCreateRoute.createRoute(const AuthOrAppPage());
-          }),
+          } else if (settings.name == AppRoutes.notifications) {
+            return AppCreateRoute.createRoute(const NotificationPage());
+          }
+          return AppCreateRoute.createRoute(const AuthOrAppPage());
+        },
+      ),
     );
   }
 }
