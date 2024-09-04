@@ -18,6 +18,7 @@ class AuthOrAppPage extends StatelessWidget {
       messagingSenderId: 'sendid',
       projectId: 'chat-pires',
       storageBucket: 'chat-pires.appspot.com',
+      
     ));
   }
 
