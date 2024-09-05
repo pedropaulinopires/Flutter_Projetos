@@ -24,7 +24,15 @@ class ChatNotificationService with ChangeNotifier {
 
   Future<bool> get _isAuthorized async {
     final messaging = FirebaseMessaging.instance;
-    final settings = await messaging.requestPermission();
+    final settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
     return settings.authorizationStatus == AuthorizationStatus.authorized;
   }
 
