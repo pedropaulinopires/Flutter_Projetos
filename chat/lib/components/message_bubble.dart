@@ -27,7 +27,7 @@ class MessageBubble extends StatelessWidget {
     }
 
     return CircleAvatar(
-      backgroundColor: Colors.pink,
+      backgroundColor: Colors.blue,
       backgroundImage: provider,
     );
   }
