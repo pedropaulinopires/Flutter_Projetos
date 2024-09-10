@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:pomodoro/store/pomodoro.store.dart';
+import 'package:provider/provider.dart';
 
 class EntradaTempo extends StatelessWidget {
   final String title;
   final int valor;
+  final void Function()? inc;
+  final void Function()? dec;
 
   const EntradaTempo({
     super.key,
     required this.title,
     required this.valor,
+    this.inc,
+    this.dec,
   });
 
   @override
   Widget build(BuildContext context) {
+    final store = Provider.of<PomodoroStore>(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -19,17 +26,21 @@ class EntradaTempo extends StatelessWidget {
           title,
           style: const TextStyle(fontSize: 20),
         ),
-        const SizedBox(height: 10,),
+        const SizedBox(
+          height: 10,
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: () {},
+              onPressed: dec,
               style: ElevatedButton.styleFrom(
-                  shape: const CircleBorder(),
-                  padding: const EdgeInsets.all(15),
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.red),
+                shape: const CircleBorder(),
+                padding: const EdgeInsets.all(15),
+                foregroundColor: Colors.white,
+                backgroundColor:
+                    store.estaTrabalhando() ? Colors.red : Colors.green,
+              ),
               child: const Icon(Icons.arrow_downward),
             ),
             Text(
@@ -37,12 +48,14 @@ class EntradaTempo extends StatelessWidget {
               style: const TextStyle(fontSize: 18),
             ),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: inc,
               style: ElevatedButton.styleFrom(
-                  shape: const CircleBorder(),
-                  padding: const EdgeInsets.all(15),
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.red),
+                shape: const CircleBorder(),
+                padding: const EdgeInsets.all(15),
+                foregroundColor: Colors.white,
+                backgroundColor:
+                    store.estaTrabalhando() ? Colors.red : Colors.green,
+              ),
               child: const Icon(Icons.arrow_upward),
             ),
           ],
