@@ -25,6 +25,9 @@ abstract class _PomodoroStore with Store {
   int tempoDescanso = 1;
 
   @observable
+  int segundosMultiplicador = 1;
+
+  @observable
   TipoIntervalo tipoIntervalo = TipoIntervalo.TRABALHO;
 
   Timer? cronometro;
@@ -32,27 +35,43 @@ abstract class _PomodoroStore with Store {
   @action
   void incrementTempoTrabalho() {
     tempoTrabalho++;
+    if (estaTrabalhando()) {
+      reiniciar();
+    }
   }
 
   @action
   void decrementTempoTrabalho() {
-    tempoTrabalho--;
+    if (tempoTrabalho > 1) {
+      tempoTrabalho--;
+      if (estaTrabalhando()) {
+        reiniciar();
+      }
+    }
   }
 
   @action
   void incrementTempoDescanso() {
     tempoDescanso++;
+    if (estaDescansando()) {
+      reiniciar();
+    }
   }
 
   @action
   void decrementTempoDescanso() {
-    tempoDescanso--;
+    if(tempoDescanso > 1){
+      tempoDescanso--;
+      if (estaDescansando()) {
+        reiniciar();
+      }
+    }
   }
 
   @action
   void iniciar() {
     iniciado = true;
-    cronometro = Timer.periodic(const Duration(seconds: 1), (timer) {
+    cronometro = Timer.periodic(Duration(seconds: segundosMultiplicador), (timer) {
       if (minutos == 0 && segundos == 0) {
         _trocarTipoIntevalo();
       } else if (segundos == 0) {
@@ -72,14 +91,16 @@ abstract class _PomodoroStore with Store {
 
   @action
   void reiniciar() {
-    iniciado = false;
     parar();
+    minutos = estaTrabalhando() ? tempoTrabalho : tempoDescanso;
+    segundos = 0;
   }
 
   bool estaTrabalhando() => tipoIntervalo == TipoIntervalo.TRABALHO;
 
   bool estaDescansando() => tipoIntervalo == TipoIntervalo.DESCANSO;
 
+  @action
   void _trocarTipoIntevalo() {
     if (estaTrabalhando()) {
       tipoIntervalo = TipoIntervalo.DESCANSO;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pomodoro/store/pomodoro.store.dart';
 import 'package:provider/provider.dart';
 
@@ -29,36 +30,40 @@ class EntradaTempo extends StatelessWidget {
         const SizedBox(
           height: 10,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: dec,
-              style: ElevatedButton.styleFrom(
-                shape: const CircleBorder(),
-                padding: const EdgeInsets.all(15),
-                foregroundColor: Colors.white,
-                backgroundColor:
-                    store.estaTrabalhando() ? Colors.red : Colors.green,
-              ),
-              child: const Icon(Icons.arrow_downward),
-            ),
-            Text(
-              '$valor min',
-              style: const TextStyle(fontSize: 18),
-            ),
-            ElevatedButton(
-              onPressed: inc,
-              style: ElevatedButton.styleFrom(
-                shape: const CircleBorder(),
-                padding: const EdgeInsets.all(15),
-                foregroundColor: Colors.white,
-                backgroundColor:
-                    store.estaTrabalhando() ? Colors.red : Colors.green,
-              ),
-              child: const Icon(Icons.arrow_upward),
-            ),
-          ],
+        Observer(
+          builder: (ctx) {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: dec,
+                  style: ElevatedButton.styleFrom(
+                    shape: const CircleBorder(),
+                    padding: const EdgeInsets.all(15),
+                    foregroundColor: Colors.white,
+                    backgroundColor:
+                        store.estaTrabalhando() ? Colors.red : Colors.green,
+                  ),
+                  child: const Icon(Icons.arrow_downward),
+                ),
+                Text(
+                  '$valor min',
+                  style: const TextStyle(fontSize: 18),
+                ),
+                ElevatedButton(
+                  onPressed: inc,
+                  style: ElevatedButton.styleFrom(
+                    shape: const CircleBorder(),
+                    padding: const EdgeInsets.all(15),
+                    foregroundColor: Colors.white,
+                    backgroundColor:
+                        store.estaTrabalhando() ? Colors.red : Colors.green,
+                  ),
+                  child: const Icon(Icons.arrow_upward),
+                ),
+              ],
+            );
+          }
         ),
       ],
     );

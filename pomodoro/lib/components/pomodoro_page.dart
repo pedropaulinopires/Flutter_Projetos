@@ -16,8 +16,8 @@ class PomodoroPage extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Expanded(
-            child: const Cronometro(),
+          const Expanded(
+            child: Cronometro(),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 40),
@@ -28,14 +28,14 @@ class PomodoroPage extends StatelessWidget {
                   EntradaTempo(
                     title: 'Trabalho',
                     valor: store.tempoTrabalho,
-                    inc: store.incrementTempoTrabalho,
-                    dec: store.decrementTempoTrabalho,
+                    inc: store.iniciado && store.estaTrabalhando() ? null : store.incrementTempoTrabalho,
+                    dec: (store.iniciado && store.estaTrabalhando()) || store.tempoTrabalho == 1 ? null : store.decrementTempoTrabalho,
                   ),
                   EntradaTempo(
                     title: 'Descanso',
                     valor: store.tempoDescanso,
-                    inc: store.incrementTempoDescanso,
-                    dec: store.decrementTempoDescanso,
+                    inc: store.iniciado && store.estaDescansando() ? null : store.incrementTempoDescanso,
+                    dec: (store.iniciado && store.estaDescansando()) || store.tempoDescanso == 1 ? null : store.decrementTempoDescanso,
                   ),
                 ],
               ),
